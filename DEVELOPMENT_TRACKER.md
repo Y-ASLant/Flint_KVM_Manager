@@ -98,7 +98,7 @@ This document tracks all GitHub issues and roadmap items for the Flint project. 
 ---
 
 ### #30 - Storage Pool Creation Not Working
-**Status**: 🔴 NOT STARTED
+**Status**: ✅ COMPLETED
 **Priority**: CRITICAL
 **Affected Users**: Debian 13, Devuan 6
 
@@ -108,19 +108,32 @@ This document tracks all GitHub issues and roadmap items for the Flint project. 
 - Tried various storage locations and permissions
 - Affects both directory and filesystem pool types
 
-**Investigation Plan**:
-1. [ ] Check frontend storage pool creation component
-2. [ ] Review API endpoint for pool creation
-3. [ ] Check backend storage pool handler
-4. [ ] Add error logging and user feedback
-5. [ ] Test with various pool configurations
+**Root Cause Identified**:
+Storage pool creation was completely unimplemented across all layers:
+1. No backend libvirtclient function to create pools
+2. No HTTP handler for pool creation
+3. No HTTP route (POST /storage-pools)
+4. No frontend API method
+5. Frontend form had no state management or submit handler
 
-**Files to Examine**:
-- Frontend: `/web/src/components/*storage*` or `/web/src/app/*storage*`
-- Backend: `/server/handlers/*storage*.go`
-- LibVirt: `/pkg/libvirtclient/storage.go`
+**Solution Implemented**:
+1. [x] Added `PoolConfig` type to `/pkg/core/types.go`
+2. [x] Implemented `CreateStoragePool()` in `/pkg/libvirtclient/storage.go`
+3. [x] Added `handleCreateStoragePool()` in `/server/handlers.go`
+4. [x] Added `POST /storage-pools` route in `/server/server.go`
+5. [x] Added `createPool()` API method in `/web/lib/api.ts`
+6. [x] Implemented complete form with state management in `/web/components/storage-view.tsx`
+7. [x] Added validation, error handling, and toast notifications
 
-**Solution Approach**: TBD after investigation
+**Files Modified**:
+- `/pkg/core/types.go`
+- `/pkg/libvirtclient/storage.go`
+- `/server/handlers.go`
+- `/server/server.go`
+- `/web/lib/api.ts`
+- `/web/components/storage-view.tsx`
+
+**Commit**: 33355d5
 
 ---
 
@@ -398,9 +411,9 @@ virt-install --name=vm1.name --memory=4096 --vcpus=4 \
 - **Total Issues**: 13
 - **Bugs**: 8
 - **Features**: 5
-- **Completed**: 0
-- **In Progress**: 0
-- **Not Started**: 13
+- **Completed**: 3
+- **In Progress**: 1
+- **Not Started**: 9
 
 ### By Priority
 - 🔴 Critical: 3 issues
@@ -474,4 +487,7 @@ None identified yet.
 - Analyzed roadmap v1.28.0 requirements
 - Explored codebase structure
 - Identified priority matrix
-- Ready to begin implementation
+- ✅ Fixed #31: Repository migration (install scripts + Go module)
+- ✅ Fixed #32/#23: VM creation from ISO (frontend field mapping)
+- ✅ Fixed #30: Storage pool creation (full stack implementation)
+- 🔄 In progress: #25 - Storage calculation errors
