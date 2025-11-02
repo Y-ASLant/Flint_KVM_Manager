@@ -193,3 +193,58 @@ func (c *Client) DeleteVolume(poolName string, volumeName string) error {
 
 	return vol.Delete(0)
 }
+
+// CreateStoragePool creates a new storage pool
+func (c *Client) CreateStoragePool(cfg core.PoolConfig) error {
+	// Validate pool type
+	if cfg.Type == "" {
+		cfg.Type = "dir" // Default to directory pool
+	}
+
+	// Build XML based on pool type
+	var xmlDesc string
+	switch cfg.Type {
+	case "dir":
+		xmlDesc = fmt.Sprintf(`
+<pool type='dir'>
+  <name>%s</name>
+  <target>
+    <path>%s</path>
+  </target>
+</pool>`, cfg.Name, cfg.Path)
+	case "fs":
+		xmlDesc = fmt.Sprintf(`
+<pool type='fs'>
+  <name>%s</name>
+  <target>
+    <path>%s</path>
+  </target>
+</pool>`, cfg.Name, cfg.Path)
+	default:
+		return fmt.Errorf("unsupported pool type: %s (supported: dir, fs)", cfg.Type)
+	}
+
+	// Define the pool
+	pool, err := c.conn.StoragePoolDefineXML(xmlDesc, 0)
+	if err != nil {
+		return fmt.Errorf("failed to define storage pool: %w", err)
+	}
+	defer pool.Free()
+
+	// Build the pool (creates directory structure)
+	if err := pool.Build(0); err != nil {
+		return fmt.Errorf("failed to build storage pool: %w", err)
+	}
+
+	// Start the pool
+	if err := pool.Create(0); err != nil {
+		return fmt.Errorf("failed to start storage pool: %w", err)
+	}
+
+	// Set pool to autostart
+	if err := pool.SetAutostart(true); err != nil {
+		fmt.Printf("Warning: failed to set pool autostart: %v\n", err)
+	}
+
+	return nil
+}

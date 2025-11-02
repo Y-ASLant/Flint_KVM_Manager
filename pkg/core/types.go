@@ -122,6 +122,12 @@ type VolumeConfig struct {
 	SizeGB uint64
 }
 
+type PoolConfig struct {
+	Name string `json:"name"`
+	Type string `json:"type"` // "dir", "fs", "netfs", "logical", etc.
+	Path string `json:"path"` // Target path for directory-based pools
+}
+
 type Image struct {
 	ID    string `json:"id"`
 	Name  string `json:"name"`

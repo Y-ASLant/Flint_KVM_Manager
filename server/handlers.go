@@ -293,6 +293,34 @@ func (s *Server) handleGetStoragePools() http.HandlerFunc {
 	}
 }
 
+func (s *Server) handleCreateStoragePool() http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		var cfg core.PoolConfig
+		if err := json.NewDecoder(r.Body).Decode(&cfg); err != nil {
+			http.Error(w, `{"error": "Invalid JSON in request body"}`, http.StatusBadRequest)
+			return
+		}
+
+		// Validate input
+		if cfg.Name == "" {
+			http.Error(w, `{"error": "Pool name is required"}`, http.StatusBadRequest)
+			return
+		}
+		if cfg.Path == "" {
+			http.Error(w, `{"error": "Pool path is required"}`, http.StatusBadRequest)
+			return
+		}
+
+		err := s.client.CreateStoragePool(cfg)
+		if err != nil {
+			http.Error(w, `{"error": "`+err.Error()+`"}`, http.StatusInternalServerError)
+			return
+		}
+
+		w.WriteHeader(http.StatusCreated)
+	}
+}
+
 func (s *Server) handleGetNetworks() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		networks, err := s.client.GetNetworks()

@@ -35,10 +35,10 @@ This document tracks all GitHub issues and roadmap items for the Flint project. 
 ## Bug Fixes
 
 ### #32 & #23 - VM Creation from ISO Fails (CloudInit nil)
-**Status**: 🔴 NOT STARTED
+**Status**: ✅ COMPLETED
 **Priority**: CRITICAL
 **Affected Users**: Multiple reports
-**Root Cause**: TBD
+**Root Cause**: Frontend sending wrong field name for ISO installations
 
 **Issue Details**:
 - Creating VMs from ISO images fails silently
@@ -46,24 +46,28 @@ This document tracks all GitHub issues and roadmap items for the Flint project. 
 - "Create & Start VM" button does nothing
 - Affects both Oracle 9.6 and other distros
 
-**Investigation Plan**:
-1. [ ] Locate VM creation handler in `/server/handlers/`
-2. [ ] Review CloudInit validation logic in `/pkg/libvirtclient/vm_create.go`
-3. [ ] Check if CloudInit should be optional for ISO installations
-4. [ ] Add proper error handling and user feedback
-5. [ ] Test with various ISO images
+**Root Cause Identified**:
+1. Frontend sent `ISOPath` field for ISO installations
+2. Backend VMCreationConfig struct only has `ImageName` field (no `ISOPath`)
+3. Validation requires `ImageName` to be non-empty
+4. For ISO installs, `ImageName` was empty → validation failed silently
 
-**Files to Examine**:
-- `/pkg/libvirtclient/vm_create.go`
-- `/pkg/libvirtclient/cloudinit.go`
-- `/server/handlers/*vm*.go`
+**Solution Implemented**:
+1. [x] Updated `simple-vm-wizard.tsx` to send `imageName` for both ISO and template types
+2. [x] Removed unused `ISOPath` field from `create-vm-wizard.tsx`
+3. [x] Fixed JSON field name casing (`cloudInit`, `commonFields`, `rawUserData`)
+4. [x] Added `enableCloudInit` field to form submission
 
-**Solution Approach**: TBD after investigation
+**Files Modified**:
+- `/web/components/simple-vm-wizard.tsx`
+- `/web/components/create-vm-wizard.tsx`
+
+**Commit**: 06c1294
 
 ---
 
 ### #31 - Installation Script Broken (Repository Migration)
-**Status**: 🔴 NOT STARTED
+**Status**: ✅ COMPLETED
 **Priority**: CRITICAL
 **Affected Users**: New installations
 
@@ -73,19 +77,23 @@ This document tracks all GitHub issues and roadmap items for the Flint project. 
 - Script fails with "Moved Permanently" API redirect
 - GitHub API returns 301 redirect instead of following it
 
-**Investigation Plan**:
-1. [ ] Review `/install.sh` script
-2. [ ] Update REPO variable to `volantvm/flint`
-3. [ ] Add redirect following with `-L` flag
-4. [ ] Test installation on fresh system
-5. [ ] Check if systemd installer also needs updates
+**Solution Implemented**:
+1. [x] Updated `/install.sh` REPO variable to `volantvm/flint`
+2. [x] Updated `/install-systemd.sh` documentation references
+3. [x] Updated README.md badges and install instructions
+4. [x] Updated docs.md install command
+5. [x] Migrated Go module path from `github.com/ccheshirecat/flint` to `github.com/volantvm/flint`
+6. [x] Updated all Go import statements across 20+ files
 
-**Files to Fix**:
+**Files Modified**:
 - `/install.sh`
-- `/install-systemd.sh` (if affected)
-- Any other hardcoded repository references
+- `/install-systemd.sh`
+- `/README.md`
+- `/docs.md`
+- `/go.mod`
+- All Go source files with imports
 
-**Solution Approach**: Update repository references and add redirect handling
+**Commit**: 64454d9
 
 ---
 

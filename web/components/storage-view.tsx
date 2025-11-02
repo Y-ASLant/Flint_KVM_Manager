@@ -77,6 +77,11 @@ export function StorageView() {
   const [editingVolume, setEditingVolume] = useState<Volume | null>(null)
   const [editVolumeSize, setEditVolumeSize] = useState(0)
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false)
+  const [isCreatePoolDialogOpen, setIsCreatePoolDialogOpen] = useState(false)
+  const [newPoolName, setNewPoolName] = useState("")
+  const [newPoolPath, setNewPoolPath] = useState("/var/lib/libvirt/pools/")
+  const [newPoolType, setNewPoolType] = useState("dir")
+  const [isCreatingPool, setIsCreatingPool] = useState(false)
 
   useEffect(() => {
     const fetchStorageData = async () => {
@@ -150,14 +155,14 @@ export function StorageView() {
 
   const handleCreateVolume = async () => {
     if (!selectedPool?.name) return
-    
+
     try {
       setIsCreatingVolume(true)
       const newVolume = await storageAPI.createVolume(selectedPool!.name, {
         Name: newVolumeName,
         SizeGB: newVolumeSize,
       })
-      
+
       // Refresh volumes list with proper error handling
       try {
         const updatedVolumes = await storageAPI.getVolumes(selectedPool.name)
@@ -171,7 +176,7 @@ export function StorageView() {
           capacity_b: newVolumeSize * 1024 * 1024 * 1024
         }])
       }
-      
+
       // Close dialog and reset form
       setIsCreateVolumeDialogOpen(false)
       setNewVolumeName("")
@@ -180,6 +185,49 @@ export function StorageView() {
       setError(err instanceof Error ? err.message : "Failed to create volume")
     } finally {
       setIsCreatingVolume(false)
+    }
+  }
+
+  const handleCreatePool = async () => {
+    if (!newPoolName || !newPoolPath) {
+      toast({
+        title: "Validation Error",
+        description: "Pool name and path are required",
+        variant: "destructive",
+      })
+      return
+    }
+
+    try {
+      setIsCreatingPool(true)
+      await storageAPI.createPool({
+        name: newPoolName,
+        type: newPoolType,
+        path: newPoolPath,
+      })
+
+      // Refresh pools list
+      const updatedPools = await storageAPI.getPools()
+      setStoragePools(updatedPools)
+
+      // Close dialog and reset form
+      setIsCreatePoolDialogOpen(false)
+      setNewPoolName("")
+      setNewPoolPath("/var/lib/libvirt/pools/")
+      setNewPoolType("dir")
+
+      toast({
+        title: "Success",
+        description: `Storage pool "${newPoolName}" created successfully`,
+      })
+    } catch (err) {
+      toast({
+        title: "Error",
+        description: err instanceof Error ? err.message : "Failed to create storage pool",
+        variant: "destructive",
+      })
+    } finally {
+      setIsCreatingPool(false)
     }
   }
 
@@ -213,9 +261,9 @@ export function StorageView() {
           <p className="text-muted-foreground">Manage storage pools and virtual disk volumes</p>
         </div>
         <div className="flex gap-2">
-          <Dialog>
+          <Dialog open={isCreatePoolDialogOpen} onOpenChange={setIsCreatePoolDialogOpen}>
             <DialogTrigger asChild>
-              <ConsistentButton 
+              <ConsistentButton
                 className="bg-primary text-primary-foreground hover:bg-primary/90"
                 icon={<Plus className="h-4 w-4" />}
               >
@@ -232,23 +280,49 @@ export function StorageView() {
               <div className="space-y-4">
                 <div className="space-y-2">
                   <Label htmlFor="pool-name">Pool Name</Label>
-                  <Input id="pool-name" placeholder="e.g., vm-storage" />
+                  <Input
+                    id="pool-name"
+                    placeholder="e.g., vm-storage"
+                    value={newPoolName}
+                    onChange={(e) => setNewPoolName(e.target.value)}
+                  />
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="pool-path">Storage Path</Label>
-                  <Input id="pool-path" placeholder="/var/lib/libvirt/images" />
+                  <Input
+                    id="pool-path"
+                    placeholder="/var/lib/libvirt/pools/mypool"
+                    value={newPoolPath}
+                    onChange={(e) => setNewPoolPath(e.target.value)}
+                  />
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="pool-type">Pool Type</Label>
-                  <select className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm">
+                  <select
+                    id="pool-type"
+                    className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
+                    value={newPoolType}
+                    onChange={(e) => setNewPoolType(e.target.value)}
+                  >
                     <option value="dir">Directory</option>
                     <option value="fs">Filesystem</option>
-                    <option value="netfs">Network Filesystem</option>
                   </select>
                 </div>
               </div>
               <DialogFooter>
-                <Button type="submit">Create Pool</Button>
+                <Button
+                  onClick={handleCreatePool}
+                  disabled={isCreatingPool || !newPoolName || !newPoolPath}
+                >
+                  {isCreatingPool ? (
+                    <>
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                      Creating...
+                    </>
+                  ) : (
+                    "Create Pool"
+                  )}
+                </Button>
               </DialogFooter>
             </DialogContent>
           </Dialog>

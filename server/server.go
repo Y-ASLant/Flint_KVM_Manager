@@ -485,6 +485,7 @@ func (s *Server) setupRoutes() {
 		r.Get("/host/status", s.handleGetHostStatus())
 		r.Get("/host/resources", s.handleGetHostResources())
 		r.Get("/storage-pools", s.handleGetStoragePools())
+		r.Post("/storage-pools", s.handleCreateStoragePool())
 		r.Get("/storage-pools/{poolName}/volumes", s.handleGetVolumes())
 		r.Post("/storage-pools/{poolName}/volumes", s.handleCreateVolume())
 		r.Put("/storage-pools/{poolName}/volumes/{volumeName}", s.handleUpdateVolume())
