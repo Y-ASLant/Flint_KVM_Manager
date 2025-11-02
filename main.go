@@ -2,7 +2,7 @@ package main
 
 import (
 	"embed"
-	"github.com/ccheshirecat/flint/cmd"
+	"github.com/volantvm/flint/cmd"
 )
 
 //go:embed web/out/*

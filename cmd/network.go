@@ -7,7 +7,7 @@ import (
 	"os"
 	"text/tabwriter"
 
-	"github.com/ccheshirecat/flint/pkg/libvirtclient"
+	"github.com/volantvm/flint/pkg/libvirtclient"
 	"github.com/spf13/cobra"
 )
 

@@ -7,7 +7,7 @@ package libvirtclient
 import "C"
 import (
 	"fmt"
-	"github.com/ccheshirecat/flint/pkg/core"
+	"github.com/volantvm/flint/pkg/core"
 	libvirt "github.com/libvirt/libvirt-go"
 	"os"
 	"reflect"

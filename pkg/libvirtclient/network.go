@@ -2,7 +2,7 @@ package libvirtclient
 
 import (
 	"fmt"
-	"github.com/ccheshirecat/flint/pkg/core"
+	"github.com/volantvm/flint/pkg/core"
 	"strconv"
 	"strings"
 )

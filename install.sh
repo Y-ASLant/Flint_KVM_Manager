@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-REPO="ccheshirecat/flint"
+REPO="volantvm/flint"
 INSTALL_DIR="/usr/local/bin"
 BINARY_NAME="flint"
 

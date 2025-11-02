@@ -7,7 +7,7 @@ import (
 	"os"
 	"strconv"
 	"strings"
-	"github.com/ccheshirecat/flint/pkg/core"
+	"github.com/volantvm/flint/pkg/core"
 )
 
 // GetSystemInterfaces returns all system network interfaces

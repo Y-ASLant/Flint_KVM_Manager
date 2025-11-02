@@ -2,7 +2,7 @@ package server
 
 import (
 	"embed"
-	"github.com/ccheshirecat/flint/pkg/libvirtclient"
+	"github.com/volantvm/flint/pkg/libvirtclient"
 	"testing"
 )
 

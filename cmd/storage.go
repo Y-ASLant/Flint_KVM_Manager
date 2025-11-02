@@ -8,8 +8,8 @@ import (
 	"strconv"
 	"text/tabwriter"
 
-	"github.com/ccheshirecat/flint/pkg/core"
-	"github.com/ccheshirecat/flint/pkg/libvirtclient"
+	"github.com/volantvm/flint/pkg/core"
+	"github.com/volantvm/flint/pkg/libvirtclient"
 	"github.com/spf13/cobra"
 )
 

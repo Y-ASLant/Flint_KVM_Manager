@@ -3,8 +3,8 @@ package libvirtclient
 import (
 	"encoding/xml"
 	"fmt"
-	"github.com/ccheshirecat/flint/pkg/activity"
-	"github.com/ccheshirecat/flint/pkg/core"
+	"github.com/volantvm/flint/pkg/activity"
+	"github.com/volantvm/flint/pkg/core"
 	libvirt "github.com/libvirt/libvirt-go"
 	"io"
 	"os"

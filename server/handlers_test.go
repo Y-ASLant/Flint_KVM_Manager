@@ -1,7 +1,7 @@
 package server
 
 import (
-	"github.com/ccheshirecat/flint/pkg/core"
+	"github.com/volantvm/flint/pkg/core"
 	"testing"
 )
 
