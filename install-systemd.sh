@@ -30,7 +30,7 @@ fi
 # Check if Flint is installed
 if ! command -v flint &> /dev/null; then
     log_error "Flint is not installed. Please install it first:"
-    echo "curl -fsSL https://raw.githubusercontent.com/ccheshirecat/flint/main/install.sh | sh"
+    echo "curl -fsSL https://raw.githubusercontent.com/volantvm/flint/main/install.sh | sh"
     exit 1
 fi
 

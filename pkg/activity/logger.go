@@ -3,7 +3,7 @@ package activity
 import (
 	"crypto/rand"
 	"encoding/hex"
-	"github.com/ccheshirecat/flint/pkg/core"
+	"github.com/volantvm/flint/pkg/core"
 	"sync"
 	"time"
 )

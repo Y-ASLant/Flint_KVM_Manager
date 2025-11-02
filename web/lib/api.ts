@@ -73,6 +73,17 @@ export interface Volume {
   capacity_b: number
 }
 
+export interface PoolConfig {
+  name: string
+  type: string // "dir" or "fs"
+  path: string
+}
+
+export interface VolumeConfig {
+  Name: string
+  SizeGB: number
+}
+
 export interface VMCreationConfig {
   Name: string
   MemoryMB: number
@@ -231,6 +242,11 @@ export const vmAPI = {
 // Storage API functions
 export const storageAPI = {
   getPools: (): Promise<StoragePool[]> => apiRequest("/storage-pools"),
+  createPool: (config: PoolConfig): Promise<void> =>
+    apiRequest("/storage-pools", {
+      method: "POST",
+      body: JSON.stringify(config),
+    }),
   getVolumes: (poolName: string): Promise<Volume[]> => apiRequest(`/storage-pools/${poolName}/volumes`),
   createVolume: (poolName: string, config: VolumeConfig): Promise<Volume> =>
     apiRequest(`/storage-pools/${poolName}/volumes`, {

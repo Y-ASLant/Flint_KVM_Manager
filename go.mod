@@ -1,4 +1,4 @@
-module github.com/ccheshirecat/flint
+module github.com/volantvm/flint
 
 go 1.25.0
 

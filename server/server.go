@@ -9,9 +9,9 @@ import (
 	"encoding/hex"
 	"encoding/json"
 	"fmt"
-	"github.com/ccheshirecat/flint/pkg/imagerepository"
-	"github.com/ccheshirecat/flint/pkg/libvirtclient"
-	"github.com/ccheshirecat/flint/pkg/logger"
+	"github.com/volantvm/flint/pkg/imagerepository"
+	"github.com/volantvm/flint/pkg/libvirtclient"
+	"github.com/volantvm/flint/pkg/logger"
 	"github.com/go-chi/chi/v5"
 	"golang.org/x/crypto/bcrypt"
 	"io"
@@ -485,6 +485,7 @@ func (s *Server) setupRoutes() {
 		r.Get("/host/status", s.handleGetHostStatus())
 		r.Get("/host/resources", s.handleGetHostResources())
 		r.Get("/storage-pools", s.handleGetStoragePools())
+		r.Post("/storage-pools", s.handleCreateStoragePool())
 		r.Get("/storage-pools/{poolName}/volumes", s.handleGetVolumes())
 		r.Post("/storage-pools/{poolName}/volumes", s.handleCreateVolume())
 		r.Put("/storage-pools/{poolName}/volumes/{volumeName}", s.handleUpdateVolume())

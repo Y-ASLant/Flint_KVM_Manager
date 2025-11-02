@@ -9,8 +9,8 @@ import (
 	"os/exec"
 	"strings"
 
-	"github.com/ccheshirecat/flint/pkg/core"
-	"github.com/ccheshirecat/flint/pkg/libvirtclient"
+	"github.com/volantvm/flint/pkg/core"
+	"github.com/volantvm/flint/pkg/libvirtclient"
 	"github.com/spf13/cobra"
 )
 

@@ -173,8 +173,7 @@ export function SimpleVMWizard() {
         VCPUs: config.vcpus,
         DiskPool: config.storagePool,
         DiskSizeGB: config.diskSize,
-        ISOPath: config.sourceType === 'iso' ? config.selectedSource : '',
-        imageName: config.sourceType === 'cloud' ? config.selectedSource : '',
+        imageName: config.selectedSource, // Use imageName for both ISO and template
         imageType: config.sourceType === 'cloud' ? 'template' : 'iso',
         enableCloudInit: config.enableCloudInit,
         cloudInit: config.enableCloudInit ? {

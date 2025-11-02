@@ -12,14 +12,14 @@
 </p>
 
 <p align="center">
-  <a href="https://github.com/ccheshirecat/flint/releases/latest">
-    <img src="https://img.shields.io/github/v/release/ccheshirecat/flint" alt="Latest Release">
+  <a href="https://github.com/volantvm/flint/releases/latest">
+    <img src="https://img.shields.io/github/v/release/volantvm/flint" alt="Latest Release">
   </a>
-  <a href="https://github.com/ccheshirecat/flint/blob/main/LICENSE">
-    <img src="https://img.shields.io/github/license/ccheshirecat/flint" alt="License">
+  <a href="https://github.com/volantvm/flint/blob/main/LICENSE">
+    <img src="https://img.shields.io/github/license/volantvm/flint" alt="License">
   </a>
-  <a href="https://github.com/ccheshirecat/flint/actions/workflows/release.yml">
-    <img src="https://img.shields.io/github/actions/workflow/status/ccheshirecat/flint/.github/workflows/release.yml" alt="Build Status">
+  <a href="https://github.com/volantvm/flint/actions/workflows/release.yml">
+    <img src="https://img.shields.io/github/actions/workflow/status/volantvm/flint/.github/workflows/release.yml" alt="Build Status">
   </a>
 </p>
 
@@ -37,7 +37,7 @@ Flint is a modern, self-contained KVM management tool built for developers, sysa
 **Prerequisites:** A Linux host with `libvirt` and `qemu-kvm` installed.
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/ccheshirecat/flint/main/install.sh | bash
+curl -fsSL https://raw.githubusercontent.com/volantvm/flint/main/install.sh | bash
 ```
 *Auto-detects OS/arch, installs to `/usr/local/bin`, and prompts for web UI passphrase setup.*
 
