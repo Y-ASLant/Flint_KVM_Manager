@@ -1074,13 +1074,13 @@ export function CreateVMWizard() {
                   VCPUs: config.vcpus,
                   DiskPool: config.storagePool,
                   DiskSizeGB: config.diskSize,
-                  ISOPath: config.sourceType === 'iso' ? config.selectedSource : '',
                   imageName: config.imageName,
                   imageType: config.imageType,
                   StartOnCreate: config.autostart,
                   NetworkName: config.networks[0]?.source || '',
-                  CloudInit: config.enableCloudInit ? {
-                    CommonFields: {
+                  enableCloudInit: config.enableCloudInit,
+                  cloudInit: config.enableCloudInit ? {
+                    commonFields: {
                       hostname: config.cloudInitConfig.hostname || '',
                       username: config.cloudInitConfig.username || '',
                       password: config.cloudInitConfig.password || '',
@@ -1094,7 +1094,7 @@ export function CreateVMWizard() {
                         dnsServers: config.cloudInitConfig.networkConfig.dnsServers || []
                       } : null
                     },
-                    RawUserData: config.cloudInitConfig.customYaml || ''
+                    rawUserData: config.cloudInitConfig.customYaml || ''
                   } : null
                 };
                 handleFormSubmit(formData);
