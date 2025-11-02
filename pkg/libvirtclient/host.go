@@ -198,15 +198,8 @@ func (c *Client) GetHostResources() (core.HostResources, error) {
 	pools, err := c.conn.ListAllStoragePools(0)
 	if err == nil {
 		filesystemStats := make(map[uint64]*syscall.Statfs_t)
-		var totalAlloc uint64
 
 		for _, p := range pools {
-			info, ierr := p.GetInfo()
-			if ierr != nil {
-				p.Free()
-				continue
-			}
-
 			// Get pool path to determine filesystem
 			xmlDesc, xmlErr := p.GetXMLDesc(0)
 			poolPath := "/var/lib/libvirt/images" // default fallback
@@ -242,20 +235,23 @@ func (c *Client) GetHostResources() (core.HostResources, error) {
 					filesystemStats[fsid] = &stat
 				}
 			}
-
-			// Always sum allocation (actual usage) regardless of filesystem
-			totalAlloc += uint64(info.Allocation)
 			p.Free()
 		}
 
-		// Calculate total capacity from unique filesystems
+		// Calculate total capacity and used space from unique filesystems
 		var totalCapacity uint64
+		var totalUsed uint64
 		for _, stat := range filesystemStats {
-			totalCapacity += uint64(stat.Blocks) * uint64(stat.Bsize)
+			capacity := uint64(stat.Blocks) * uint64(stat.Bsize)
+			// Available = Bavail (available to non-root) or Bfree (total free)
+			// Used = Total - Available
+			used := capacity - (uint64(stat.Bavail) * uint64(stat.Bsize))
+			totalCapacity += capacity
+			totalUsed += used
 		}
 
 		out.StorageTotalB = totalCapacity
-		out.StorageUsedB = totalAlloc
+		out.StorageUsedB = totalUsed
 	}
 
 	// Count active network interfaces across all running VMs
